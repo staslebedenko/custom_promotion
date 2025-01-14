@@ -62,19 +62,9 @@ jobs:
           rm -f "$FILE_PATH_CONFIG"  
           git restore --source=ST_config "$FILE_PATH_CONFIG"  
           git add "$FILE_PATH_CONFIG"  
-          
-          FILE_PATH_ACTION=".github/workflows/st_azure_pipeline.yml"
-          rm -f "$FILE_PATH_ACTION"
-          git restore --source=ST_config "$FILE_PATH_ACTION"  
-          git add "$FILE_PATH_ACTION" 
           git commit -m "Updated Function1.cs and Pipeline from ST_config 1"  
   
       - name: Force push to update the remote ST branch  
         run: git push origin ST --force
-        
-      - name: Trigger the pipeline
-        run: |  
-          git commit --allow-empty -m "Trigger workflow after merging"  
-          git push origin ST  
-          
+                
         
