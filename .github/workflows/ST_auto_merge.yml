@@ -56,9 +56,9 @@ jobs:
       - name: Apply ST related config file Function1.cs from ST_config branch
         run: |  
           FILE_PATH_CONFIG="Promotion app/Function1.cs"
-          rm -f "$FILE_PATH"  
-          git restore --source=ST_config "$FILE_PATH"  
-          git add "$FILE_PATH"  
+          rm -f "$FILE_PATH_CONFIG"  
+          git restore --source=ST_config "$FILE_PATH_CONFIG"  
+          git add "$FILE_PATH_CONFIG"  
           
           FILE_PATH_ACTION=".github/workflows/st_azure_pipeline.yml"
           rm -f "$FILE_PATH_ACTION" --ignore-unmatch
