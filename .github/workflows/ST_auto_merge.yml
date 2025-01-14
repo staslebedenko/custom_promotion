@@ -21,8 +21,8 @@ jobs:
   
       - name: Set up Git  
         run: |  
-          git config user.name "Your Name"  
-          git config user.email "your-email@example.com"
+          git config user.name "Stas"  
+          git config user.email "stas@stas.com"
       
       - name: Validate the provided tag  
         run: |  
@@ -55,11 +55,23 @@ jobs:
   
       - name: Apply ST related config file Function1.cs from ST_config branch
         run: |  
-          FILE_PATH="Promotion app/Function1.cs"  
+          FILE_PATH_CONFIG="Promotion app/Function1.cs"
           rm -f "$FILE_PATH"  
           git restore --source=ST_config "$FILE_PATH"  
           git add "$FILE_PATH"  
-          git commit -m "Updated Function1.cs from ST_config 1"  
+          
+          FILE_PATH_ACTION=".github/workflows/st_azure_pipeline.yml"
+          rm -f "$FILE_PATH_ACTION" --ignore-unmatch
+          git restore --source=ST_config "$FILE_PATH_ACTION"  
+          git add "$FILE_PATH_ACTION" 
+          git commit -m "Updated Function1.cs and Pipeline from ST_config 1"  
   
       - name: Force push to update the remote ST branch  
-        run: git push origin ST --force  
+        run: git push origin ST --force
+        
+      - name: Trigger the pipeline
+        run: |  
+          git commit --allow-empty -m "Trigger workflow after merging"  
+          git push origin ST  
+          
+        
