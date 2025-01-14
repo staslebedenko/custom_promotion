@@ -1,6 +1,9 @@
 name: Update ST Branch  
   
-on:  
+on:
+  push:
+    branches:
+      - ST
   workflow_dispatch:  
     inputs:  
       tag:  
