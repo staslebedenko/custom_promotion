@@ -23,6 +23,17 @@ jobs:
         run: |  
           git config user.name "Your Name"  
           git config user.email "your-email@example.com"
+      
+      - name: Validate the provided tag  
+        run: |  
+          TAG="${{ github.event.inputs.tag }}"  
+          if git rev-parse "$TAG" >/dev/null 2>&1  
+          then  
+            echo "Tag '$TAG' exists."  
+          else  
+            echo "Error: Tag '$TAG' does not exist."  
+            exit 1  
+          fi  
 
       - name: Reset to initial commit  
         run: |  
@@ -38,8 +49,11 @@ jobs:
           git clean -fdx  
           git restore --source=$TAG --worktree --staged -- .  
           git commit -m "Imported master at $TAG"  
+          
+      - name: Fetch ST_config branch  
+        run: git fetch origin ST_config:ST_config  
   
-      - name: Overwrite Function1.cs with version from ST_config  
+      - name: Apply ST related config file Function1.cs from ST_config branch
         run: |  
           FILE_PATH="Promotion app/Function1.cs"  
           rm -f "$FILE_PATH"  
