@@ -3,7 +3,8 @@ name: Deploy Function app from ST branch
 on:
   push:
     branches:
-      - ST
+      - 'ST'
+      - '!master'
   workflow_dispatch:
 
 env:
