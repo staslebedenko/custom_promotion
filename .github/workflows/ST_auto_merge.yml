@@ -23,13 +23,7 @@ jobs:
         run: |  
           git config user.name "Your Name"  
           git config user.email "your-email@example.com"
-          
-      - name: List all branches  
-        run: git branch -a
 
-      - name: Fetch ST_config branch  
-        run: git fetch origin ST_config:ST_config  
-  
       - name: Reset to initial commit  
         run: |  
           INITIAL_COMMIT=$(git rev-list --max-parents=0 HEAD)  
