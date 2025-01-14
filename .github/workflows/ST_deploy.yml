@@ -12,41 +12,40 @@ env:
   AZURE_FUNCTIONAPP_PACKAGE_PATH: '.' # Path to your web app project  
   DOTNET_VERSION: '8.0.x'             # .NET version to use  
   
-jobs:  
-  build-and-deploy:  
-    runs-on: windows-latest  
-    permissions:  
-      id-token: write # Required for requesting the JWT  
-  
-    steps:  
-      - name: Checkout Selected Branch  
-        uses: actions/checkout@v4  
-        with:  
-          ref: ${{ github.event.inputs.branch }}  
-  
-      - name: Setup .NET ${{ env.DOTNET_VERSION }} Environment  
-        uses: actions/setup-dotnet@v3  
-        with:  
-          dotnet-version: ${{ env.DOTNET_VERSION }}  
-  
-      - name: Resolve Project Dependencies Using dotnet  
-        shell: pwsh  
-        run: |  
-          pushd './${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}'  
-          dotnet build --configuration Release --output ./output  
-          popd  
-        
-      - name: Login to Azure  
-        uses: azure/login@v1  
-        with:  
-          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID }}  
-          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID }}  
-          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID }}  
-  
-      - name: Run Azure Functions Action  
-        uses: Azure/functions-action@v1  
-        id: fa  
-        with:  
-          app-name: 'Promotionapp20250101233608'  
-          slot-name: 'Production'  
-          package: '${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}/output'  
+jobs:
+  build-and-deploy:
+    runs-on: windows-latest
+    permissions:
+      id-token: write #This is required for requesting the JWT
+
+    steps:
+      - name: 'Checkout GitHub Action'
+        uses: actions/checkout@v4
+
+      - name: Setup DotNet ${{ env.DOTNET_VERSION }} Environment
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+
+      - name: 'Resolve Project Dependencies Using Dotnet'
+        shell: pwsh
+        run: |
+          pushd './${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}'
+          dotnet build --configuration Release --output ./output
+          popd
+      
+      - name: Login to Azure
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_14597BA57D50466D8C90D028CA67C52F }}
+          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_4A5AD31F9F3E4C2BAFE9275DA62F217E }}
+          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_FDBA9511419D41DB89C44C1F6CB58400 }}
+
+      - name: 'Run Azure Functions Action'
+        uses: Azure/functions-action@v1
+        id: fa
+        with:
+          app-name: 'Promotionapp20250101233608'
+          slot-name: 'Production'
+          package: '${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}/output'
+          
