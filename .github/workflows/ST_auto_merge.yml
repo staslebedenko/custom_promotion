@@ -33,10 +33,9 @@ jobs:
       - name: Import code from master at specific tag  
         run: |  
           TAG="${{ github.event.inputs.tag }}"  
-          git rm -rf .  
+          git rm -rf --ignore-unmatch . 
           git clean -fdx  
           git restore --source=$TAG --worktree --staged -- .  
-          git add .  
           git commit -m "Imported master at $TAG"  
   
       - name: Overwrite Function1.cs with version from ST_config  
