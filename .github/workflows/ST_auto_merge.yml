@@ -61,7 +61,7 @@ jobs:
           git add "$FILE_PATH_CONFIG"  
           
           FILE_PATH_ACTION=".github/workflows/st_azure_pipeline.yml"
-          rm -f "$FILE_PATH_ACTION" --ignore-unmatch
+          rm -f "$FILE_PATH_ACTION"
           git restore --source=ST_config "$FILE_PATH_ACTION"  
           git add "$FILE_PATH_ACTION" 
           git commit -m "Updated Function1.cs and Pipeline from ST_config 1"  
