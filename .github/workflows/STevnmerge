@@ -1,0 +1,51 @@
+name: Update ST Branch  
+  
+on:  
+  workflow_dispatch:  
+    inputs:  
+      tag:  
+        description: 'Tag to import from master'  
+        required: true  
+        default: 'v1.2.3'  
+  
+jobs:  
+  update-st-branch:  
+    runs-on: ubuntu-latest  
+    steps:  
+      - name: Checkout repository  
+        uses: actions/checkout@v3  
+        with:  
+          fetch-depth: 0  # Ensure all history is fetched  
+          ref: ST         # Checkout the ST branch  
+  
+      - name: Set up Git  
+        run: |  
+          git config user.name "Your Name"  
+          git config user.email "your-email@example.com"  
+  
+      - name: Reset to initial commit  
+        run: |  
+          INITIAL_COMMIT=$(git rev-list --max-parents=0 HEAD)  
+          git reset --hard $INITIAL_COMMIT  
+          git clean -fdx
+          git push origin ST --force  
+  
+      - name: Import code from master at specific tag  
+        run: |  
+          TAG="${{ github.event.inputs.tag }}"  
+          git rm -rf .  
+          git clean -fdx  
+          git restore --source=$TAG --worktree --staged -- .  
+          git add .  
+          git commit -m "Imported master at $TAG"  
+  
+      - name: Overwrite Function1.cs with version from ST_config  
+        run: |  
+          FILE_PATH="Promotion app/Function1.cs"  
+          rm -f "$FILE_PATH"  
+          git restore --source=ST_config "$FILE_PATH"  
+          git add "$FILE_PATH"  
+          git commit -m "Updated Function1.cs from ST_config 1"  
+  
+      - name: Force push to update the remote ST branch  
+        run: git push origin ST --force  
