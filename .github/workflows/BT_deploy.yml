@@ -1,0 +1,67 @@
+name: Update ST Branch  
+  
+on:
+  push:
+    branches:
+      - ST
+  workflow_dispatch:  
+    inputs:  
+      tag:  
+        description: 'Tag to import from master'  
+        required: true  
+        default: 'v1.2.3'  
+  
+jobs:  
+  update-st-branch:  
+    runs-on: ubuntu-latest  
+    steps:  
+      - name: Checkout repository  
+        uses: actions/checkout@v3  
+        with:  
+          fetch-depth: 0          # Fetch all history  
+          ref: BT                 # Checkout the ST branch  
+  
+      - name: Set up Git  
+        run: |  
+          git config user.name "Stas"  
+          git config user.email "stas@stas.com"
+      
+      - name: Validate the provided tag  
+        run: |  
+          TAG="${{ github.event.inputs.tag }}"  
+          if git rev-parse "$TAG" >/dev/null 2>&1  
+          then  
+            echo "Tag '$TAG' exists."  
+          else  
+            echo "Error: Tag '$TAG' does not exist."  
+            exit 1  
+          fi  
+
+      - name: Reset branch to empty state 
+        run: |  
+          git switch BT  
+          git rm -rf --ignore-unmatch .  
+          git clean -fdx
+          git push origin BT --force  
+  
+      - name: Import code from master at specific tag  
+        run: |  
+          TAG="${{ github.event.inputs.tag }}"  
+          git restore --source=$TAG --worktree --staged -- .  
+          git commit -m "Imported master at $TAG"  
+          
+      - name: Fetch BT_config branch  
+        run: git fetch origin BT_config:BT_config  
+  
+      - name: Apply BT related config file Function1.cs from BT_config branch
+        run: |  
+          FILE_PATH_CONFIG="Promotion app/Function1.cs"
+          rm -f "$FILE_PATH_CONFIG"  
+          git restore --source=BT_config "$FILE_PATH_CONFIG"  
+          git add "$FILE_PATH_CONFIG"  
+          git commit -m "Updated Function1.cs and Pipeline from BT_config"  
+  
+      - name: Force push to update the remote BT branch  
+        run: git push origin BT --force
+                
+        
