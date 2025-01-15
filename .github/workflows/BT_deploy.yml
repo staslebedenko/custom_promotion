@@ -12,7 +12,7 @@ on:
         default: 'v1.2.3'  
   
 jobs:  
-  update-st-branch:  
+  update-bt-branch:  
     runs-on: ubuntu-latest  
     steps:  
       - name: Checkout repository  
