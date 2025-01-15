@@ -3,7 +3,7 @@ name: Update ST Branch
 on:
   push:
     branches:
-      - ST
+      - BT
   workflow_dispatch:  
     inputs:  
       tag:  
