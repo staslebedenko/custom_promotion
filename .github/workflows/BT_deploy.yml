@@ -1,4 +1,4 @@
-name: Update ST Branch  
+name: Update BT Branch  
   
 on:
   push:
