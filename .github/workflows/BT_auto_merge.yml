@@ -42,6 +42,8 @@ jobs:
           git switch BT  
           git rm -rf --ignore-unmatch .  
           git clean -fdx
+          git add -A
+          git commit --allow-empty -m "Reset"
           git push origin BT --force  
   
       - name: Import code from master at specific tag  
