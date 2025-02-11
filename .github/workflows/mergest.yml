@@ -1,0 +1,50 @@
+name: Merge dev to target branch  
+  
+on:  
+  workflow_dispatch:  
+    inputs:  
+      target-branch:  
+        description: 'Select the target branch to merge into'  
+        required: true  
+        type: choice  
+        options:  
+          - ST  
+          - TT  
+  
+jobs:  
+  merge:  
+    runs-on: ubuntu-latest  
+  
+    steps:  
+    - name: Checkout repository  
+      uses: actions/checkout@v2  
+      with:  
+        fetch-depth: 0 # Fetch all history for all branches and tags  
+  
+    - name: Set up Git user  
+      run: |  
+        git config --global user.name 'github-actions[bot]'  
+        git config --global user.email 'github-actions[bot]@users.noreply.github.com'  
+  
+    - name: Select target branch  
+      id: select-branch  
+      run: echo "branch=${{ github.event.inputs['target-branch'] }}" >> $GITHUB_ENV  
+  
+    - name: Checkout target branch  
+      run: git checkout ${{ github.event.inputs['target-branch'] }}  
+  
+    - name: Ensure target branch is empty  
+      run: |  
+        git rm -rf .  
+        git clean -fdx  
+        git commit --allow-empty -m "Clean ${{ github.event.inputs['target-branch'] }} branch"  
+        git push origin ${{ github.event.inputs['target-branch'] }} --force  
+  
+    - name: Copy files from dev to target branch  
+      run: |  
+        git checkout dev -- .  
+        git add .  
+        git commit --allow-empty -m "Merge dev into ${{ github.event.inputs['target-branch'] }}"  
+  
+    - name: Push target branch to remote  
+      run: git push origin ${{ github.event.inputs['target-branch'] }} --force  
