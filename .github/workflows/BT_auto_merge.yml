@@ -56,11 +56,15 @@ jobs:
         run: git fetch origin BT_config:BT_config  
   
       - name: Apply BT related config file Function1.cs from BT_config branch
-        run: |  
-          FILE_PATH_CONFIG="Promotion app/Function1.cs"
-          rm -f "$FILE_PATH_CONFIG"  
-          git restore --source=BT_config "$FILE_PATH_CONFIG"  
-          git add "$FILE_PATH_CONFIG"  
+        run: |
+          FILE_PATHS=(
+              "Promotion app/Function1.cs"
+          )
+          for FILE_PATH in "${FILE_PATHS[@]}"; do
+              rm -f "$FILE_PATH"  
+              git restore --source=BT_config "$FILE_PATH"  
+              git add "$FILE_PATH"
+          done
           git commit -m "Updated Function1.cs and Pipeline from BT_config"  
   
       - name: Force push to update the remote BT branch  
