@@ -59,13 +59,17 @@ jobs:
         run: |
           FILE_PATHS=(
               "Promotion app/Function1.cs"
+              "Jenkinsfile"
           )
           for FILE_PATH in "${FILE_PATHS[@]}"; do
               rm -f "$FILE_PATH"  
-              git restore --source=BT_config "$FILE_PATH"  
-              git add "$FILE_PATH"
+                  if git restore --source=BT_config "$FILE_PATH"; then
+                      git add "$FILE_PATH"
+                  else
+                      echo "Warning: Could not restore $FILE_PATH from BT_config"
+                  fi
           done
-          git commit -m "Updated Function1.cs and Pipeline from BT_config"  
+          git commit -m "Updated with files from BT_config"  
   
       - name: Force push to update the remote BT branch  
         run: git push origin BT --force
